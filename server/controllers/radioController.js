@@ -1,5 +1,6 @@
 const RadioStation = require('../models/RadioStation');
 const Song = require('../models/Song');
+const { normalizeSongs } = require('../utils/urlHelper');
 
 exports.getStations = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ exports.getStations = async (req, res) => {
         }
 
         const stObj = st.toObject();
-        stObj.songs = validSongs;
+        stObj.songs = normalizeSongs(validSongs, req);
         return stObj;
       })
     );
@@ -59,7 +60,7 @@ exports.getStationBySlug = async (req, res) => {
     }
 
     const stObj = station.toObject();
-    stObj.songs = validSongs;
+    stObj.songs = normalizeSongs(validSongs, req);
     res.json(stObj);
   } catch (error) {
     res.status(500).json({ message: error.message });

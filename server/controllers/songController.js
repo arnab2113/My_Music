@@ -1,5 +1,6 @@
 const Song = require('../models/Song');
 const RadioStation = require('../models/RadioStation');
+const { normalizeSongs, normalizeSong } = require('../utils/urlHelper');
 
 // @desc Get all songs with pagination & filters
 // @route GET /api/songs
@@ -29,7 +30,7 @@ exports.getSongs = async (req, res) => {
       .populate('artist', 'name image')
       .populate('album', 'title cover')
       .sort({ createdAt: -1 });
-    res.json(songs);
+    res.json(normalizeSongs(songs, req));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -41,7 +42,7 @@ exports.getSongById = async (req, res) => {
   try {
     const song = await Song.findById(req.params.id).populate('artist').populate('album');
     if (!song) return res.status(404).json({ message: 'Song not found' });
-    res.json(song);
+    res.json(normalizeSong(song, req));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

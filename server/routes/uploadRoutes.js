@@ -10,7 +10,8 @@ router.post('/', protect, admin, upload.single('file'), (req, res) => {
     return res.status(400).json({ message: 'Please upload an audio or image file' });
   }
 
-  const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  const fileUrl = `${protocol}://${req.get('host')}/uploads/${req.file.filename}`;
   res.json({
     message: 'File uploaded successfully',
     url: fileUrl,

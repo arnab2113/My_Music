@@ -21,6 +21,9 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
 
+// Trust reverse proxies (Render, Vercel, Heroku, Nginx) for HTTPS protocol detection
+app.set('trust proxy', 1);
+
 // Security Helmet (configured for audio streaming cross-origin)
 app.use(
   helmet({
