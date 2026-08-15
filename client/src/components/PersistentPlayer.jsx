@@ -59,7 +59,7 @@ export default function PersistentPlayer() {
         audioEngine.play();
       }
     }
-  }, [currentSong?._id, currentSong?.audioUrl]);
+  }, [currentSong]);
 
   // Real-Time Play Count Increment when new song starts
   useEffect(() => {
