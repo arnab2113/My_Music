@@ -5,6 +5,7 @@ import api from '../services/api';
 import { addToast } from '../store/uiSlice';
 import { setQueue, setIsPlaying } from '../store/playerSlice';
 import { toggleAuthModal, logout } from '../store/authSlice';
+import { extractYouTubeId } from '../services/audioEngine';
 
 export default function AdminDashboard() {
   const dispatch = useDispatch();
@@ -33,6 +34,26 @@ export default function AdminDashboard() {
     else if (g.includes('Bhojpuri')) setSongLanguage('Bhojpuri');
     else if (g.includes('Instrumental')) setSongLanguage('Instrumental');
     else setSongLanguage('Hindi');
+  };
+
+  const handleAudioUrlChange = async (url) => {
+    setSongAudioUrl(url);
+    const ytId = extractYouTubeId(url);
+    if (ytId) {
+      if (!songCoverUrl) {
+        setSongCoverUrl(`https://img.youtube.com/vi/${ytId}/hqdefault.jpg`);
+      }
+      try {
+        const res = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+        if (data.title && !songTitle) {
+          setSongTitle(data.title);
+        }
+        if (data.author_name && !songArtist) {
+          setSongArtist(data.author_name);
+        }
+      } catch (err) {}
+    }
   };
 
   const handleClearAllSongs = async () => {
@@ -345,10 +366,15 @@ export default function AdminDashboard() {
                 <input
                   type="text"
                   value={songAudioUrl}
-                  onChange={(e) => setSongAudioUrl(e.target.value)}
-                  placeholder="https://example.com/song.mp3 or YouTube link"
+                  onChange={(e) => handleAudioUrlChange(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=... or MP3 link"
                   className="w-full px-4 py-2.5 rounded-xl bg-black/40 border border-borderCustom text-xs text-textPrimary focus:outline-none focus:border-accent"
                 />
+                {extractYouTubeId(songAudioUrl) && (
+                  <p className="mt-1 text-[10px] font-mono text-red-400 flex items-center gap-1">
+                    <span>▶️ YouTube Video Detected! Title, Artist & HD Thumbnail auto-filled.</span>
+                  </p>
+                )}
                 <div className="mt-1.5 flex items-center gap-2">
                   <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-mono text-accent border border-accent/30 transition-all flex items-center gap-1.5">
                     <span>📁 Upload MP3 / Audio File</span>
