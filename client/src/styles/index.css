@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0c0a09;
+  --bg-surface: #1c1917;
+  --bg-elevated: #27272a;
+  --text-primary: #fef3c7;
+  --text-secondary: #a1a1aa;
+  --accent: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.4);
+  --border: rgba(245, 158, 11, 0.15);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-serif {
+  font-family: 'Playfair Display', 'Cinzel', serif;
+  letter-spacing: -0.015em;
+}
+
+.font-display {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+}
+
+.font-sans {
+  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.03em;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Glassmorphism Panels */
+.glass-panel {
+  background: rgba(18, 16, 15, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+.glass-card {
+  background: rgba(28, 25, 23, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 25px var(--accent-glow);
+  transform: translateY(-4px);
+}
+
+/* Vinyl Grooves & Turntable styling */
+.vinyl-record {
+  background: radial-gradient(circle, #2b2b2b 0%, #111111 40%, #000000 70%, #1a1a1a 100%);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+.vinyl-grooves {
+  background: repeating-radial-gradient(
+    circle at center,
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 3px,
+    transparent 4px
+  );
+}
+
+@keyframes spinVinyl {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-vinyl {
+  animation: spinVinyl 12s linear infinite;
+}
+
+.paused-spin {
+  animation-play-state: paused !important;
+}
+
+/* Streetlamp Cone Light Effect */
+.streetlamp-light {
+  background: radial-gradient(ellipse at top, var(--accent-glow) 0%, rgba(245, 158, 11, 0.08) 40%, transparent 75%);
+}
+
+/* Select & Option Dropdown Custom Styling for High Contrast & Visibility */
+select {
+  background-color: var(--bg-surface, #1c1917) !important;
+  color: var(--text-primary, #fef3c7) !important;
+  border-color: var(--border, rgba(245, 158, 11, 0.3));
+}
+
+select option {
+  background-color: #18181b !important;
+  color: #fef3c7 !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+}
+
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked {
+  background-color: #27272a !important;
+  color: #f59e0b !important;
+}
+
+/* Hide UI smooth transition */
+.hide-ui-transition {
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+

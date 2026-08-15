@@ -1,0 +1,16 @@
+{
+  "short_name": "NostalgiaFM",
+  "name": "NOSTALGIA FM — Music Never Gets Old",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0c0a09",
+  "theme_color": "#f59e0b",
+  "display": "standalone",
+  "orientation": "portrait-primary"
+}
