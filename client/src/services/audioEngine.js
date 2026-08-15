@@ -45,6 +45,7 @@ class AudioEngineService {
     this.onTimeUpdateCallback = null;
     this.onEndedCallback = null;
     this.onErrorCallback = null;
+    this.currentLoadedUrl = null;
 
     this.setupListeners();
     this.initYouTubeAPI();
@@ -120,9 +121,6 @@ class AudioEngineService {
         },
         onError: (e) => {
           console.warn('YouTube Player Error:', e.data);
-          this.isYouTubeMode = false;
-          this.audioElement.src = this.sampleFallbackStreams[0];
-          this.audioElement.play().catch(() => {});
         }
       }
     });
@@ -167,16 +165,23 @@ class AudioEngineService {
     });
 
     this.audioElement.addEventListener('error', () => {
-      if (!this.isYouTubeMode) {
-        console.warn('HTML5 Audio error on URL, auto-swapping to playable stream fallback...');
-        const randomFallback = this.sampleFallbackStreams[Math.floor(Math.random() * this.sampleFallbackStreams.length)];
-        this.audioElement.src = randomFallback;
-        this.audioElement.play().catch(() => {});
+      if (!this.isYouTubeMode && this.audioElement.error) {
+        // Ignore user/script aborts (code 1) or transient stalls
+        if (this.audioElement.error.code === 1) return;
+        console.warn('HTML5 Audio error code:', this.audioElement.error.code);
       }
     });
   }
 
   loadSong(url) {
+    if (!url) return;
+    
+    // Prevent redundant load calls if the same track is already loaded
+    if (this.currentLoadedUrl === url) {
+      return;
+    }
+    this.currentLoadedUrl = url;
+
     const ytId = extractYouTubeId(url);
 
     if (ytId) {
@@ -200,15 +205,8 @@ class AudioEngineService {
         } catch (e) {}
       }
 
-      let playableUrl = url;
-      if (!url) {
-        playableUrl = this.sampleFallbackStreams[0];
-      }
-
-      if (this.audioElement.src !== playableUrl) {
-        this.audioElement.src = playableUrl;
-        this.audioElement.load();
-      }
+      this.audioElement.src = url;
+      this.audioElement.load();
     }
 
     this.startYouTubeProgressTracker();
@@ -248,9 +246,11 @@ class AudioEngineService {
     try {
       await this.audioElement.play();
     } catch (err) {
-      console.warn('Audio play request interrupted, auto-retrying fallback:', err);
-      this.audioElement.src = this.sampleFallbackStreams[0];
-      await this.audioElement.play().catch(() => {});
+      if (err.name === 'AbortError') {
+        // Interrupted by normal playback operations, ignore safely
+        return;
+      }
+      console.warn('Audio play request notice:', err.message);
     }
   }
 
